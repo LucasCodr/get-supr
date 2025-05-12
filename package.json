@@ -12,13 +12,17 @@
   },
   "dependencies": {
     "@heroui/react": "2.7.5",
+    "@react-stately/data": "^3.12.3",
     "@tanstack/react-query": "^5.59.13",
     "@tanstack/react-query-devtools": "^5.59.13",
     "@tanstack/react-router": "^1.67.0",
     "@tanstack/router-devtools": "^1.67.0",
+    "axios": "^1.9.0",
     "framer-motion": "^11.11.8",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "viem": "2.x",
+    "wagmi": "^2.15.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",

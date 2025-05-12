@@ -1,0 +1,8 @@
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@heroui/shared-utils'
+  - '@swc/core'
+  - bufferutil
+  - esbuild
+  - keccak
+  - utf-8-validate
