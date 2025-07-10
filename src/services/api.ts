@@ -167,16 +167,18 @@ export const apiClient = {
   executeSwap: async (
     params: ExecuteSwapParams,
   ): Promise<ExecuteSwapResponse> => {
-    const response = await api.post("/execute", {
-      txId: params.txId,
-      quoteSignature: params.quoteSignature,
-      quotationID: params.quotationId,
-      toAddress: params.toAddress,
-      fromAddress: params.fromAddress,
-      chainId: params.chainId,
-      depositAddress: params.depositAddress,
-      walletName: params.walletName,
-      origin: params.origin,
+    const response = await api.get("/execute", {
+      params: {
+        txId: params.txId,
+        quoteSignature: params.quoteSignature,
+        quotationID: params.quotationId,
+        toAddress: params.toAddress,
+        fromAddress: params.fromAddress,
+        chainId: params.chainId,
+        depositAddress: params.depositAddress,
+        walletName: params.walletName,
+        origin: params.origin,
+      },
     });
 
     return response.data;

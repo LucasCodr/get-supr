@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
-import { parseEther } from "viem";
+import { erc20Abi, parseEther, parseUnits } from "viem";
 import {
   type BaseError,
   useAccount,
@@ -18,7 +18,9 @@ import {
   useSendTransaction,
   useSignMessage,
 } from "wagmi";
+import { writeContract } from "wagmi/actions";
 import { metaMask } from "wagmi/connectors";
+import { config } from "~/lib/wagmi";
 import { useKeypairs, useNetworks } from "../hooks/useSwapAPI";
 import {
   type Keypair,
@@ -70,6 +72,8 @@ function Page() {
       setIsLoadingQuote(false);
     }
   }, [keypair, amount]);
+
+  console.log(quote);
 
   return (
     <div className="container mx-auto min-h-[calc(100vh-65px)] max-w-lg p-4">
@@ -187,14 +191,13 @@ function Page() {
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">You Pay</span>
                   <span className="font-medium">
-                    {quote.amounts.quoteAmount} {keypair?.name.split("-")[0]}
+                    {quote.amounts.amount} {keypair?.name.split("-")[1]}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">You Receive</span>
                   <span className="font-medium">
-                    {quote.amounts.quoteAmountCurrency}{" "}
-                    {keypair?.name.split("-")[1]}
+                    {quote.amounts.quoteAmount} {keypair?.name.split("-")[0]}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -227,13 +230,21 @@ function Page() {
                           message: quote.quotationId,
                         });
 
-                        const transaction = await sendTransactionAsync({
-                          to: quote.depositAddress as `0x${string}`,
-                          value: parseEther(quote.amounts.quoteAmount),
+                        const tx = await writeContract(config, {
+                          abi: erc20Abi,
+                          address: keypair?.quoteAssetId as `0x${string}`,
+                          functionName: "transfer",
+                          args: [
+                            quote.depositAddress as `0x${string}`,
+                            parseUnits(
+                              quote.amounts.amount,
+                              quote.quotePrecision,
+                            ),
+                          ],
                         });
 
                         await apiClient.executeSwap({
-                          txId: transaction,
+                          txId: tx,
                           quoteSignature: signature,
                           quotationId: quote.quotationId,
                           toAddress: address,
